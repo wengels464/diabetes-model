@@ -23,15 +23,15 @@ I will have to research a couple of things:
 
 ### Flow of Data
 
-Raw CSV 
-Pandas Dataframe
-Cleaning and Imputation
-New Dataframe
-Clean True CSV
-Invent New False CSV
-Algorithmic Training
-Predict Labels on False CSV
-Dashboard Software (PowerBI or something)
+Raw CSV\n 
+Pandas Dataframe\n
+Cleaning and Imputation\n
+New Dataframe\n
+Clean True CSV\n
+Invent New False CSV\n
+Algorithmic Training\n
+Predict Labels on False CSV\n
+Dashboard Software (PowerBI or something)\n
 ...
 
 *What I would like is a way to pipe data into this program and have it analyze, label, and store the data in SQL, then have SQL talkk to a dashboard. I'm unsure of the details*
