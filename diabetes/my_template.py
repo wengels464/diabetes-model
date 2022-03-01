@@ -34,17 +34,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__author__ = "One solo developer"
-__authors__ = ["One developer", "And another one", "etc"]
-__contact__ = "mail@example.com"
-__copyright__ = "Copyright $YEAR, $COMPANY_NAME"
-__credits__ = ["One developer", "And another one", "etc"]
-__date__ = "YYYY/MM/DD"
+__author__ = "William Engels"
+__contact__ = "wengels464@gmail.com"
+__copyright__ = "Copyright 2022 William Engels"
+__credits__ = ["William Engels", "Christopher Luiz"]
+__date__ = "2022/03/01"
 __deprecated__ = False
-__email__ =  "mail@example.com"
+__email__ =  "wengels464@gmail.com"
 __license__ = "MIT"
-__maintainer__ = "developer"
-__status__ = "Production"
+__maintainer__ = "William Engels"
+__status__ = "Testing"
 __version__ = "0.0.1"
 
 """
@@ -57,26 +56,16 @@ import sys
 
 # other imports
 import numpy as np
-#import pandas as pd
+import pandas as pd
 #from statsmodels.tsa.arima_model import Arima
 
 
-def get_data(path1, path2):
-    """ This function reads the data from two csvs.
+def get_data(path_to_CSV) -> Pandas Dataframe:
 
-    Args:
-       path1: filepath to first csv
-       path2: filepath to second csv
+"""This function takes in a path and uses several built-in parameters to 
+do an early cleaning of the data. Returns a Pandas dataframe."""
 
-    Returns: pandas DataFrame
-    """
-
-    # read file1
-
-    # read file2
-
-    # join files
-
+    df = pd.read_csv('../data/diabetes.csv') #add extra params here
     return df
 
 
