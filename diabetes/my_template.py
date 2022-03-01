@@ -1,3 +1,5 @@
+#%%
+
 #!/usr/bin/env python
 
 """ This module does x, for y, because of z.
@@ -46,28 +48,30 @@ __maintainer__ = "William Engels"
 __status__ = "Testing"
 __version__ = "0.0.1"
 
-"""
-
-"""
-
 # standard lib imports
 import pickle
 import sys
 
 # other imports
-import numpy as np
+#import numpy as np
 import pandas as pd
 #from statsmodels.tsa.arima_model import Arima
 
+# local variables
+path_to_data = 'data/raw/diabetes.csv'
 
-def get_data(path_to_CSV) -> Pandas Dataframe:
+def get_data(path_to_data): #figure out how to add return annotation
 
-"""This function takes in a path and uses several built-in parameters to 
-do an early cleaning of the data. Returns a Pandas dataframe."""
+    """This function takes in a path and uses several 
+    built-in parameters to do an early cleaning of the 
+    data. Returns a Pandas dataframe."""
 
-    df = pd.read_csv('../data/diabetes.csv') #add extra params here
+    df = pd.read_csv(path_to_data) #add extra params here
     return df
 
+df = get_data(path_to_data)
+
+#%%
 
 def process_data(df):
     """ This function processes a pandas DataFrame as output by get_data and
