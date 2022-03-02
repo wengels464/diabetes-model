@@ -71,28 +71,11 @@ def get_data(path_to_data): #figure out how to add return annotation
 
 df = get_data(path_to_data)
 
-def zeroes_exist(dataframe) -> bool:
-    # Check if zeroes in either flt or int form exist. Prints type of zero and returns boolean.
-    if 0 in dataframe.values or 0.0 in dataframe.values:
-        if 0 in dataframe.values:
-            print("Int-type 0 found in dataset")
-            return True
-        else:
-            print("Float-type 0.0 found in dataset")
-            return True
+def zeroes_present(dataframe, column) -> bool:
+    if 0 in dataframe[column].values:
+        return True
     else:
-        return False
-
-def count_zeroes(dataframe, column_header) -> int:
-    # Takes in a dataframe and a column name and returns number of zeroes (float and int)
-    count = dataframe[column_header].value_counts()[0]
-    if type(count) != int:
-        print("Fuck")
-    else:
-        return count
-
-count = df['Age']
-empty = count.isnull().values.any()
+        return False    
 
 #%%
 
