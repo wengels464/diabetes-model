@@ -190,7 +190,7 @@ def engineer_features(df, run_scaler=False, feature_filter=False):
     if feature_filter:
         df = filter_feature_importance(df)
 
-    df = add_features(df)
+    #df = add_features(df)
     return df
 
 
@@ -273,7 +273,7 @@ def get_metrics(data_dict):
 df = get_data(data_path)
 df = process_data(df)
 df = engineer_features(df)
-df, mets = build_model(df, 'placeholder')
+df, accuracy = build_model(df, 'placeholder')
 
 
 # scratchpad
