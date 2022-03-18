@@ -190,7 +190,7 @@ def engineer_features(df, run_scaler=False, feature_filter=False):
     if feature_filter:
         df = filter_feature_importance(df)
 
-    #df = add_features(df)
+    df = add_features(df)
     return df
 
 
@@ -215,7 +215,7 @@ def build_model(df, model_type) -> Tuple[pd.DataFrame, dict]:
     
     # split data and create data_dict
     def split_data(df):
-        X = df.iloc[:,:-1]
+        X = df.drop('Outcome', axis=1)
         y = df['Outcome']
         X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=33, stratify=y)
