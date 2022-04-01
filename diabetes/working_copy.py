@@ -280,7 +280,7 @@ def engineer_features(dfs):
         working_frame = dfs[key]
         
         dfs[key] = trim_outliers(working_frame, 4) # z of 4
-        dfs[key] = scale_data(working_frame)
+        #dfs[key] = scale_data(working_frame)
         continue
     
     return dfs
@@ -415,10 +415,6 @@ p.dump(optimal_model, open(pickle_path, 'wb'))
 
 
 # scratchpad
-
-
-
-
 
 
 
