@@ -55,7 +55,8 @@ __version__ = "0.0.1"
 # general imports
 
 import pathlib
-from typing import Tuple, Union
+from typing import Union
+import pickle as p
 
 
 # imports
@@ -66,17 +67,19 @@ from scipy import stats
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from sklearn.linear_model import BayesianRidge
-#from sklearn.experimental import enable_iterative_imputer
+from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import BayesianRidge
+
 
 
 # local variables
@@ -97,6 +100,8 @@ knn_hyperparams = dict(n_neighbors=7, weights='distance',
 
 rf_example = RandomForestClassifier()
 rf_type = type(rf_example)
+
+knn_type = type(KNeighborsClassifier())
 
 rf_key = 0
 
@@ -275,7 +280,7 @@ def engineer_features(dfs):
         working_frame = dfs[key]
         
         dfs[key] = trim_outliers(working_frame, 4) # z of 4
-        dfs[key] = scale_data(working_frame)
+        #dfs[key] = scale_data(working_frame)
         continue
     
     return dfs
@@ -284,7 +289,7 @@ def engineer_features(dfs):
 
 
 
-def build_model(dfs: dict, model_type: ModelClassifier) -> dict:
+def build_model(dfs: dict, model_type: str) -> dict:
     
     # TODO: Docstring says it returns a trained_model but it looks
     # as if it's returning a dataframe "metrics". Get clarification.
@@ -294,12 +299,22 @@ def build_model(dfs: dict, model_type: ModelClassifier) -> dict:
 
     Args:
        df: pandas DataFrame cleaned features as output by engineer_features
-       model_type: model to fit
+       model_type: a string representing the name of a classifier:
+           'KNN' = KNeighborsClassifier()
+           'RF' = RandomForestClassifier()
 
     Returns: trained_model
     """
     
-    # TODO: memory management and scope potpourri, many questions.
+    # function-specific hyperparamaters
+    rf_hps = dict(n_estimators=50,
+                  random_state=seed)
+    
+    knn_hps = dict(n_neighbors=5,
+                   weights='uniform',
+                   algorithm='brute')
+    
+    
     
     # split data and create data_dict
     def split_data(df):
@@ -318,14 +333,19 @@ def build_model(dfs: dict, model_type: ModelClassifier) -> dict:
     # TODO: unclear how model_type interacts
     
     def train_model(df, model_type):
-        
-        key = rf_type
-        
+                
         X_train, X_test, y_train, y_test = split_data(df)
         
-        hyperparams = clf_hp['rf_key']
+        clf = None
         
-        clf = model_type(**hyperparams)
+        if model_type == 'KNN':
+            hyperparams = knn_hps
+            clf = KNeighborsClassifier(**hyperparams)
+        elif model_type == 'RF':
+            hyperparams = rf_hps
+            clf = RandomForestClassifier(**hyperparams)
+        
+        
         
         clf.fit(X_train, y_train)
         
@@ -384,16 +404,17 @@ df = get_data(data_path)
 datasets = process_data(df)
 datasets = engineer_features(datasets)
 
-rf = RandomForestClassifier
-scores, models = build_model(datasets, rf)
 
+scores_rf, models_rf = build_model(datasets, 'RF')
+scores_knn, models_knn = build_model(datasets, 'KNN')
+
+optimal_model = models_rf['DecisionTree']
+
+pickle_path = pathlib.Path('models/model.sav')
+p.dump(optimal_model, open(pickle_path, 'wb'))
 
 
 # scratchpad
-
-
-
-
 
 
 
