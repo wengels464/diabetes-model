@@ -441,7 +441,7 @@ def summary(model_strings: list, candidate_dfs: dict) -> pd.DataFrame:
 
 
     
-# testing block
+# __main__ block
 
 if __name__ == '__main__':
     df = get_data(data_path)
@@ -451,44 +451,10 @@ if __name__ == '__main__':
     scores_knn, models_knn = build_model(datasets, 'KNN')
     scores_xgb, models_xgb = build_model(datasets, 'XGB')
 
-    optimal_model = models_xgb['ExtraTrees']
+    optimal_model = models_rf['ExtraTrees']
 
     pickle_path = pathlib.Path('models/model.sav')
     p.dump(optimal_model, open(pickle_path, 'wb'))
     pass
 
-    
-
-
-
-
-
-
-# scratchpad
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# End

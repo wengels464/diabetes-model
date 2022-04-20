@@ -12,15 +12,13 @@ import pickle
 app = Flask(__name__)
 model = pickle.load(open('models/model.sav','rb')) #read mode
 
-
-
-
 @app.route("/")
 def home():
     return render_template('home.html')
 
 
 @app.route("/predict", methods=['GET','POST'])
+
 
 def predict():
     if request.method == 'POST':
@@ -38,7 +36,6 @@ def predict():
         #get prediction
         input_cols = [[pregnancies, glucose, bloodpressure, skinthickness,
                        insulin, bmi, dpf, age]]
-        print(input_cols)
         
         prediction = model.predict(input_cols)
         
@@ -48,9 +45,8 @@ def predict():
         if prediction[0] == 0:
             output = 'Negative'
 
-        return render_template("home.html", prediction_text='Your predicted status is {}'.format(output))
-
-
+        return render_template("home.html", prediction_text=
+                               'Your predicted status is {}'.format(output))
 
 if __name__ == "__main__":
     app.run(debug=False)
