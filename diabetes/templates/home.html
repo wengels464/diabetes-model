@@ -11,27 +11,27 @@
    <h1 style="text-align:center">Do you have type 2 diabetes?</h1>
     <form action="{{ url_for('predict')}}" method="post">
       <label for="pregnancies" colo>Pregnancies:  </label>
-      <input type="text" name="pregnancies" placeholder="pregnancies" required="required">
+      <input type="text" name="pregnancies" placeholder="Number of Pregnancies" required="required">
       <br>
       <br>
       <label for="glucose">Glucose:  </label>
-      <input type="text" name="glucose" placeholder="glucose" required="required">
+      <input type="text" name="glucose" placeholder="mg/dL" required="required">
       <br>
       <br>
       <label for="skinthickness">SkinThickness:  </label>
-      <input type="text" name="skinthickness" placeholder="skinthickness" required="required">
+      <input type="text" name="skinthickness" placeholder="mm" required="required">
       <br>
       <br>
 	  <label for="bloodpressure">BloodPressure:  </label>
-      <input type="text" name="bloodpressure" placeholder="bloodpressure" required="required">
+      <input type="text" name="bloodpressure" placeholder="mmHg" required="required">
       <br>
       <br>
-	  <label for="diabetespedigreefunction">DiabetesPedigreeFunction:  </label>
-      <input type="text" name="diabetespedigreefunction" placeholder="diabetespedigreefunction" required="required">
+	  <label for="diabetespedigreefunction">Diabetes Pedigree Function:  </label>
+      <input type="text" name="diabetespedigreefunction" placeholder="See Docs" required="required">
       <br>
       <br>
 	  <label for="insulin">Insulin:  </label>
-      <input type="text" name="insulin" placeholder="insulin" required="required">
+      <input type="text" name="insulin" placeholder="IU/mL" required="required">
       <br>
       <br>
 	  <label for="BMI">BMI:  </label>
@@ -39,7 +39,7 @@
       <br>
       <br>
 	  <label for="age">Age:  </label>
-      <input type="text" name="age" placeholder="age" required="required">
+      <input type="text" name="age" placeholder="Age" required="required">
       <br>
       <br>
       <button type="submit" class="btn btn-primary btn-block btn-large">Predict Your Fate</button>

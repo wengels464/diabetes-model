@@ -6,6 +6,8 @@
 This module is an all-in-one script for building a predictive model
 from the UCI Pima Indians Dataset (no longer available from UCI).
 
+It takes in a CSV and puts a single serialized sklearn classifier in ../models
+
 A link to the main page with the original CSV can be found here:
 https://www.kaggle.com/uciml/pima-indians-diabetes-database.
 """
@@ -50,7 +52,7 @@ __maintainer__ = "William Engels"
 __status__ = "Testing"
 __version__ = "0.0.1"
 
-# beginning of production code
+# Beginning
 
 # general imports
 
@@ -65,22 +67,33 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
+# classifiers
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier
 
+# metrics
+
 from sklearn.metrics import accuracy_score
+
+# preprocessing
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+# data imputation
+
+# TODO: Silence this warning.
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
+
+# regression models for MICE
 
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.linear_model import BayesianRidge
-
 
 
 # local variables
@@ -89,7 +102,7 @@ data_path = pathlib.Path('data/raw/diabetes.csv')
 ModelClassifier = Union[RandomForestClassifier, KNeighborsClassifier]
 seed = 25
 
-# hyperparameter dictionaries
+# tunable hyperparameter dictionaries for classifiers
 
 rf_hyperparams = dict(n_estimators=100, max_depth=15, 
                       max_features=8, random_state=seed)
@@ -97,7 +110,10 @@ rf_hyperparams = dict(n_estimators=100, max_depth=15,
 knn_hyperparams = dict(n_neighbors=7, weights='distance',
                        algorithm='brute')
 
+# TODO: Add dict for XGB
+
 # map classifiers to hyperparameters
+# TODO: Clean and make less shitty
 
 rf_example = RandomForestClassifier()
 rf_type = type(rf_example)
@@ -113,7 +129,7 @@ clf_hp = dict(rf_key = rf_hyperparams)
 
 def get_data(data_path: pathlib.WindowsPath) -> pd.DataFrame:
     """
-    Takes in a path to a CSV file. Encodes "Outcome" column as bool.
+    Takes in a path to a CSV file as a pathlib object.
     
     Returns a pandas dataframe
     """
@@ -191,7 +207,7 @@ def process_data(dataframe) -> dict:
                             ('KNN',imputer_knn),
                             ('DecisionTree',imputer_nonLin),
                             ('ExtraTrees',imputer_missForest)])
-        
+        # TODO: Add attribution
         return imputer_dict
         
     
@@ -235,24 +251,19 @@ def engineer_features(dfs):
     def trim_outliers(df, z: float) -> pd.DataFrame:
         """
         Takes in a dataframe and removes all observations with more
-        than 3 standard deviations of clearance.
+        than z standard deviations of clearance.
         
         Returns a dataframe.
         """
         return df[(np.abs(stats.zscore(df)) < z).all(axis=1)]
     
-    def filter_feature_importance(df) -> None:
-        """
-        Placedholder. Consult Chris
-        """
-        
-        return None
 
-    # feature 3 code
+    # apply standard scaler for KNN
     def scale_data(df) -> pd.DataFrame:
         """
-        Probably unnecessary for RF, trees. May be necessary if doing 
-        anything else, i.e. ensemble, XGBoost. Consult Chris.
+        Takes a pandas dataframe and applies sklearn's standard scaler.
+        
+        Returns a scaled dataframe.
         """
         
         outcomes = df['Outcome']
@@ -267,15 +278,6 @@ def engineer_features(dfs):
         complete = unlabeled.join(outcomes, how='outer')
         return complete
                         
-    
-    def add_features(df) -> pd.DataFrame:
-
-        df.loc[:,'N1']=0
-        df.loc[(df['Age']<=30) & (df['Glucose']<=120),'N1']=1
-        
-        
-        
-        return df
     
     for key in dfs:
         working_frame = dfs[key]
@@ -292,11 +294,8 @@ def engineer_features(dfs):
 
 def build_model(dfs: dict, model_type: str) -> dict:
     
-    # TODO: Docstring says it returns a trained_model but it looks
-    # as if it's returning a dataframe "metrics". Get clarification.
-    
     """ This function takes a pandas DataFrame of engineered features as output
-    by engineer_features and returns a trained model object and metrics.
+    by engineer_features and returns a trained model object.
 
     Args:
        df: pandas DataFrame cleaned features as output by engineer_features
@@ -304,21 +303,10 @@ def build_model(dfs: dict, model_type: str) -> dict:
            'KNN' = KNeighborsClassifier()
            'RF' = RandomForestClassifier()
 
-    Returns: trained_model
+    Returns: a dict of trained_models with labels
     """
     
-    # function-specific hyperparamaters
-    rf_hps = dict(n_estimators=50,
-                  random_state=seed)
-    
-    knn_hps = dict(n_neighbors=5,
-                   weights='uniform',
-                   algorithm='brute')
-    
-    xgb_hps = dict(max_depth=7,
-                   eta=0.2,
-                   verbosity=0)
-    
+
     
     
     # split data and create data_dict
@@ -331,13 +319,21 @@ def build_model(dfs: dict, model_type: str) -> dict:
         
         return X_train, X_test, y_train, y_test
     
-    
-    # func-scoped vars (avoid recomputation)
 
-    # train model
-    # TODO: unclear how model_type interacts
-    
+    # train model    
     def train_model(df, model_type):
+        
+        # function-specific hyperparamaters
+        rf_hps = dict(n_estimators=50,
+                      random_state=seed)
+        
+        knn_hps = dict(n_neighbors=5,
+                       weights='uniform',
+                       algorithm='brute')
+        
+        xgb_hps = dict(max_depth=7,
+                       eta=0.2,
+                       verbosity=0)
                 
         X_train, X_test, y_train, y_test = split_data(df)
         
@@ -363,8 +359,6 @@ def build_model(dfs: dict, model_type: str) -> dict:
     # establish dict of trained models and respective scores
     scores = dict()
     models = dict()
-
-    # run against test set
     
     # iterative loop
     for imputation in dfs:
@@ -386,13 +380,8 @@ def build_model(dfs: dict, model_type: str) -> dict:
 
 def get_metrics(data_dict):
     
-    # TODO: Ask Chris about what exactly this is supposed to be.
-    # TODO: Seems to be mostly for logging/debugging, but unclear.
-    # TODO: NVM, think I get it.
-    # TODO: NVM, NVM. Still lost.
-    
-    # Confusion matrix, acc/recall, model evaluation in general
-    
+    # TODO: Return confusion matrix.
+        
     """
 
     Args:
@@ -439,7 +428,9 @@ def summary(model_strings: list, candidate_dfs: dict) -> pd.DataFrame:
     # TODO: make this a real thing
     return summary_df
 
-
+# TODO: Implement a pick_model() function that returns the optimal model
+def pick_model(models: list) -> None:
+    return None
     
 # __main__ block
 
@@ -456,5 +447,7 @@ if __name__ == '__main__':
     pickle_path = pathlib.Path('models/model.sav')
     p.dump(optimal_model, open(pickle_path, 'wb'))
     pass
+
+# TODO: Remove warnings and implement progress printing
 
 # End
