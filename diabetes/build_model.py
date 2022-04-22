@@ -84,8 +84,7 @@ from sklearn.preprocessing import StandardScaler
 
 # data imputation
 
-# TODO: Silence this warning.
-from sklearn.experimental import enable_iterative_imputer
+from sklearn.experimental import enable_iterative_imputer # noqa
 from sklearn.impute import IterativeImputer
 
 # regression models for MICE
@@ -101,28 +100,6 @@ from sklearn.linear_model import BayesianRidge
 data_path = pathlib.Path('data/raw/diabetes.csv')
 ModelClassifier = Union[RandomForestClassifier, KNeighborsClassifier]
 seed = 25
-
-# tunable hyperparameter dictionaries for classifiers
-
-rf_hyperparams = dict(n_estimators=100, max_depth=15, 
-                      max_features=8, random_state=seed)
-
-knn_hyperparams = dict(n_neighbors=7, weights='distance',
-                       algorithm='brute')
-
-# TODO: Add dict for XGB
-
-# map classifiers to hyperparameters
-# TODO: Clean and make less shitty
-
-rf_example = RandomForestClassifier()
-rf_type = type(rf_example)
-
-knn_type = type(KNeighborsClassifier())
-
-rf_key = 0
-
-clf_hp = dict(rf_key = rf_hyperparams)
 
 
 # define functions
@@ -179,35 +156,50 @@ def process_data(dataframe) -> dict:
         """
         Builds a collection of candidate imputers.
         Returns a dict of strings mapping to pre-built imputers.
-        """ 
+        """
+        
+        """
+        Code attribution:
+            The parameters for these imputers were copied from this source:
+        
+        Title: Python Feature Engineering Cookbook
+        Author: Soledad Galli
+        ISBN: 9781789806311
+        Link: https://www.packtpub.com/product/python-feature-engineering-cookbook/9781789806311
+        
+        """
         
         imputer_bayes = IterativeImputer(
             estimator=BayesianRidge(),
             max_iter=30,
-            random_state=0)
+            random_state=0,
+            sample_posterior=False)
         
         imputer_knn = IterativeImputer(
             estimator=KNeighborsRegressor(n_neighbors=5),
             max_iter=30,
-            random_state=0)
+            random_state=0,
+            sample_posterior=False)
         
         imputer_nonLin = IterativeImputer(
             estimator=DecisionTreeRegressor(
                 max_features='sqrt', random_state=0),
             max_iter=30,
-            random_state=0)
+            random_state=0,
+            sample_posterior=False)
         
         imputer_missForest = IterativeImputer(
             estimator=ExtraTreesRegressor(
                 n_estimators=10, random_state=0),
             max_iter=30,
-            random_state=0)
+            random_state=0,
+            sample_posterior=False)
         
         imputer_dict = dict([('Bayes',imputer_bayes),
                             ('KNN',imputer_knn),
                             ('DecisionTree',imputer_nonLin),
                             ('ExtraTrees',imputer_missForest)])
-        # TODO: Add attribution
+
         return imputer_dict
         
     
