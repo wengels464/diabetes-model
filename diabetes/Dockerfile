@@ -30,11 +30,11 @@ RUN python -W ignore build_model.py
 
 RUN echo "Model Built!"
 
-#RUN python -W ignore app.py
+RUN echo "Flask Active!"
 
-#RUN echo "Flask Active!"
+EXPOSE 5001
 
-CMD echo "Success!"
+CMD python -W ignore app.py
 
 
 

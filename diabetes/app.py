@@ -49,4 +49,4 @@ def predict():
                                'Your predicted status is {}'.format(output))
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=False, port=5001)
