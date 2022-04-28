@@ -112,7 +112,7 @@ Similarly, the market for wearables such as the now near-ubiqitous Apple Watch a
 
 Furthermore, the Apple Watch has been used in myriad studies on population health and by HMOs for outpatient cardiac monitoring. Research into these wearables seems to reveal new biomarkers nearly every day. 
 
-Germane to our purposes, **these wearables can provide accurate or at least representative data on baseline activity and aerobic fitness and volume of exercise, enabling to predict potential weight-loss.**
+Germane to our purposes, **these wearables can provide accurate or at least representative data on baseline activity and aerobic fitness and volume of exercise, enabling the prediction of potential weight-loss.**
 
 Finally, smart scales that can measure BMI over time have become cheap and compatible with major health management suites such as Apple Health and Samsung Health.
 
