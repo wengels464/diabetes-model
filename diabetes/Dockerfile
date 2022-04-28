@@ -8,7 +8,13 @@ LABEL maintainer="wengels464@gmail.com"
 LABEL version="0.1"
 LABEL description="A Flask API that uses an ensemble classifier to predict diabetic status."
 
+# Get latest packages and software
+
 RUN apt-get update
+
+RUN apt-get upgrade -y
+
+# Establish environment
 
 COPY environment.yml requirements.txt /tmp/
 	
@@ -22,17 +28,21 @@ RUN conda update conda
 
 RUN conda env create -f /tmp/environment.yml -n diabetes
 
+# Activate environment
+
 SHELL ["conda", "run", "-n", "diabetes", "/bin/bash", "-c"]
 
 RUN echo "Virtual Environment Established!"
+
+# Execute model construction
 
 RUN python -W ignore build_model.py
 
 RUN echo "Model Built!"
 
-RUN echo "Flask Active!"
+RUN echo "Activating Flask!"
 
-EXPOSE 5001
+RUN echo "Setup Complete!"
 
 CMD python -W ignore app.py
 

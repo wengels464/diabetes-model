@@ -49,8 +49,8 @@ __deprecated__ = False
 __email__ =  "wengels464@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "William Engels"
-__status__ = "Testing"
-__version__ = "0.0.1"
+__status__ = "Live - Testing"
+__version__ = "0.0.2"
 
 # Beginning
 
