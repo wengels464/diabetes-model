@@ -60,6 +60,14 @@ import pathlib
 from typing import Union
 import pickle as p
 
+from warnings import simplefilter
+from sklearn.exceptions import ConvergenceWarning
+simplefilter("ignore", category=ConvergenceWarning)
+
+# remove XGB future warnings about deprecation in pandas.Int64Index
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 # imports
 
@@ -98,7 +106,7 @@ from sklearn.linear_model import BayesianRidge
 # local variables
 
 data_path = pathlib.Path('data/raw/diabetes.csv')
-ModelClassifier = Union[RandomForestClassifier, KNeighborsClassifier]
+ModelClassifier = Union[RandomForestClassifier, KNeighborsClassifier, XGBClassifier]
 seed = 25
 
 
@@ -142,7 +150,9 @@ def process_data(dataframe) -> dict:
         
     def nans_to_medians(dataframe) -> pd.DataFrame:
         
-        # build a dict with {col1, mean1, col2, mean2...colN, meanN}
+        """
+        Takes a dataframe and replaces all np.nan with the median for the col.
+        """
         
         columns_medians = dict()
         for column in cols_with_zeros:
@@ -230,7 +240,7 @@ def process_data(dataframe) -> dict:
     return candidates
 
 
-def engineer_features(dfs):
+def engineer_features(dfs, trim: bool, z: float, scale: bool):
     """
     Takes a dictionary of dataframes with different imputations.
     Performs the following engineering on the dataframes:
@@ -239,6 +249,7 @@ def engineer_features(dfs):
     
     Returns a dictionary of engineered dataframes.
     """
+    
     # judicious outlier trimming
     def trim_outliers(df, z: float) -> pd.DataFrame:
         """
@@ -250,7 +261,7 @@ def engineer_features(dfs):
         return df[(np.abs(stats.zscore(df)) < z).all(axis=1)]
     
 
-    # apply standard scaler for KNN
+    # apply standard scaler for KNN, minimal impact on other classifiers
     def scale_data(df) -> pd.DataFrame:
         """
         Takes a pandas dataframe and applies sklearn's standard scaler.
@@ -274,8 +285,12 @@ def engineer_features(dfs):
     for key in dfs:
         working_frame = dfs[key]
         
-        dfs[key] = trim_outliers(working_frame, 4) # z of 4
-        #dfs[key] = scale_data(working_frame)
+        if trim:
+            dfs[key] = trim_outliers(working_frame, z)
+            continue
+        
+        if scale:
+            dfs[key] = scale_data(working_frame)
         continue
     
     return dfs
@@ -325,7 +340,8 @@ def build_model(dfs: dict, model_type: str) -> dict:
         
         xgb_hps = dict(max_depth=7,
                        eta=0.2,
-                       verbosity=0)
+                       verbosity=0,
+                       use_label_encoder = False)
                 
         X_train, X_test, y_train, y_test = split_data(df)
         
@@ -385,7 +401,7 @@ def get_metrics(data_dict):
 
     return None
 
-def summary(model_strings: list, candidate_dfs: dict) -> pd.DataFrame:
+def summary(model_strings: list) -> pd.DataFrame:
     """
     Parameters
     ----------
@@ -410,36 +426,94 @@ def summary(model_strings: list, candidate_dfs: dict) -> pd.DataFrame:
 
     Returns
     -------
-    A pandas dataframe which contains three columns:
+    A pandas dataframe which contains four columns:
         Model: Either XGB, KNN, or RF
+        Object: Actual instance of trained model.
         Dataset: Either Bayes, DecisionTree, RF, KNN, or median.
         Score: Simple accuracy score.
     """
-    
-    summary_df = pd.DataFrame()
-    # TODO: make this a real thing
-    return summary_df
 
-# TODO: Implement a pick_model() function that returns the optimal model
-def pick_model(models: list) -> None:
-    return None
+    
+    for model in model_strings:
+        high_score = 0
+        impute_set = None
+        impute_object = None
+        best_classifier = None
+        classifier_object = None
+        
+        if model == 'KNN':
+            for score in scores_knn:
+                if scores_knn[score] > high_score:
+                    high_score = scores_knn[score]
+                    classifier_object = models_knn[score]
+                    impute_object = datasets[score]
+                    impute_set = score
+                    best_classifier = model
+                else: continue
+            pass
+        
+        if model == 'XGB':
+            for score in scores_xgb:
+                if scores_xgb[score] > high_score:
+                    high_score = scores_xgb[score]
+                    classifier_object = models_xgb[score]
+                    impute_object = datasets[score]
+                    impute_set = score
+                    best_classifier = model
+                else: continue
+            pass
+        
+        if model == 'RF':
+            for score in scores_rf:
+                if scores_rf[score] > high_score:
+                    high_score = scores_rf[score]
+                    classifier_object = models_rf[score]
+                    impute_object = datasets[score]
+                    impute_set = score
+                    best_classifier = model
+                else: continue
+            pass
+        pass
+    
+        
+        summary =         {"Model Name": best_classifier,
+                          "Model Object": classifier_object,
+                          "Dataset Name": impute_set,
+                          "Dataset Object": impute_object,
+                          "Accuracy Score": high_score}
+        
+        return summary
+        
     
 # __main__ block
 
 if __name__ == '__main__':
+    
+    model_list = ["KNN", "RF", "XGB"]
+    
+    print("Getting data...")
     df = get_data(data_path)
+    
+    print("Processing data...")
     datasets = process_data(df)
-    datasets = engineer_features(datasets)
+    
+    print("Engineering data features...")
+    datasets = engineer_features(datasets, trim=False, scale=False, z=np.nan)
+    
+    print("Constructing classifiers...")
     scores_rf, models_rf = build_model(datasets, 'RF')
     scores_knn, models_knn = build_model(datasets, 'KNN')
     scores_xgb, models_xgb = build_model(datasets, 'XGB')
-
-    optimal_model = models_rf['ExtraTrees']
-
+    
+    print("Identifying best performer...")
+    outcome = summary(model_list)
+    optimal_model_object = outcome["Model Object"]
+    
+    print("Saving model to file...")
     pickle_path = pathlib.Path('models/model.sav')
-    p.dump(optimal_model, open(pickle_path, 'wb'))
+    p.dump(optimal_model_object, open(pickle_path, 'wb'))
+    
+    print("Program successful, exiting...")
     pass
-
-# TODO: Remove warnings and implement progress printing
 
 # End
