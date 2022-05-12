@@ -36,11 +36,9 @@ RUN echo "Virtual Environment Established!"
 
 # Execute model construction
 
-RUN python -W ignore build_model.py
+RUN python build_model.py
 
 RUN echo "Model Built!"
-
-RUN echo "Activating Flask!"
 
 RUN echo "Setup Complete!"
 
