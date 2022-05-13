@@ -39,7 +39,7 @@ def take_input() -> list:
     dpf = float(request.form["diabetespedigreefunction"])
     bloodpressure = float(request.form["bloodpressure"])
     insulin = float(request.form["insulin"])
-    bmi = float(request.form["BMI"])
+    bmi = float(request.form["bmi"])
     age = int(request.form["age"])
     
     # Return vector with relevant data points, (1,8) for not XGB, (8) for XGB
@@ -86,7 +86,7 @@ def predict():
             output = 'Negative'
 
         return render_template("home.html", prediction_text=
-                               'Your predicted status is {}'.format(output))
+                               'Your predicted status is {}!'.format(output))
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=8080)

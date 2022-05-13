@@ -206,49 +206,42 @@
   </head>
   <body>
     <div class="testbox">
-    <form action="{{ url_for('predict')}}" method="post">
+    <form action="/">
       <div class="banner">
         <h1>Diabetes User Input</h1>
       </div>
       <div class="item">
         <p>Number of Pregnancies:</p>
         <input required type="number" name="pregnancies" 
-		placeholder="Pregnancies (Int)" value="{{request.form['pregnancies']}}"/>
+		placeholder="Pregnancies (Int)"/>
       </div>
       <div class="item">
         <p>Glucose</p>
-        <input required type="number" name="glucose" placeholder="mg/dL"
-		value="{{request.form['glucose']}}"/>
+        <input required type="number" name="glucose" placeholder="mg/dL" />
       </div>
 	  <div class="item">
         <p>Skin Thickness</p>
-        <input required type="number" name="skinthickness" placeholder="mm" 
-		value="{{request.form['skinthickness']}}"/>
+        <input required type="number" name="skinthickness" placeholder="mm" />
       </div>
 	  <div class="item">
         <p>Blood Pressure (Systolic)</p>
-        <input required type="number" name="bloodpressure" placeholder="mmHg" 
-		value="{{request.form['bloodpressure']}}"/>
+        <input required type="number" name="bloodpressure" placeholder="mmHg" />
       </div>
 	  <div class="item">
         <p>Diabetes Pedigree Function</p>
-        <input required type="number" name="diabetespedigreefunction" 
-		placeholder="See Docs" value="{{request.form['diabetespedigreefunction']}}"/>
+        <input required type="number" name="diabetespedigreefunction" placeholder="See Docs" />
       </div>
 	  <div class="item">
         <p>Insulin</p>
-        <input required type="number" name="insulin" placeholder="IU/mL" 
-		value="{{request.form['insulin']}}"/>
+        <input required type="number" name="insulin" placeholder="IU/mL" />
       </div>
 	  <div class="item">
         <p>Body Mass Index</p>
-        <input required type="number" name="bmi" placeholder="kg/m2" 
-		value="{{request.form['bmi']}}"/>
+        <input required type="number" name="bmi" placeholder="kg/m2" />
       </div>
 	  <div class="item">
         <p>Age</p>
-        <input required type="number" name="age" placeholder="Years" 
-		value="{{request.form['age']}}"/>
+        <input required type="number" name="age" placeholder="Years" />
       </div>
         <div class="btn-block">
           <button type="submit" href="/">Calculate Type II Diabetic Status</button>
