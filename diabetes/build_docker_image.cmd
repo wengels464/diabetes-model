@@ -1,5 +1,5 @@
 echo "Building docker image..."
 
-docker build .
+docker build . -t diabetes
 
 echo "Docker image built, exiting..."
