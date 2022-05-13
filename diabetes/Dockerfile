@@ -42,7 +42,9 @@ RUN echo "Model Built!"
 
 RUN echo "Setup Complete!"
 
-CMD python -W ignore app.py
+EXPOSE 8080
+
+CMD python app.py
 
 
 
