@@ -13,7 +13,7 @@ from flask import Flask, render_template, request
 import pickle 
 import pandas as pd
 
-# Regressors for Type Checking
+# Classifiers for Type Checking
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier

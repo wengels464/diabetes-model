@@ -60,6 +60,7 @@ import pathlib
 from typing import Union
 import pickle as p
 
+# remove ConvergenceWarning from IterativeImputer
 from warnings import simplefilter
 from sklearn.exceptions import ConvergenceWarning
 simplefilter("ignore", category=ConvergenceWarning)
@@ -106,7 +107,9 @@ from sklearn.linear_model import BayesianRidge
 # local variables
 
 data_path = pathlib.Path('data/raw/diabetes.csv')
-ModelClassifier = Union[RandomForestClassifier, KNeighborsClassifier, XGBClassifier]
+ModelClassifier = Union[RandomForestClassifier, 
+                        KNeighborsClassifier, 
+                        XGBClassifier]
 seed = 25
 
 
