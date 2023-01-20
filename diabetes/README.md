@@ -10,65 +10,39 @@ The dataset is sourced from female Pima Indians over the age of 21.
 
 ## Proposed Features and Outcomes
 
-### Containerization
+### Containerization & Reproducibility
 
-I would love to produce my first Docker container.
+Product will containerized in a Docker container running a minimal Ubuntu/Conda install.
+
+Python dependencies will be managed using Conda.
 
 ### Cloud Hosting
 
-It appears that Amazon ECS (Fargate) supports Docker containers.
+Deployable to ECS/ECR/Fargate, uses Flask API for user interaction and HTML styling.
 
 ### Functionality
 
-I need some help understanding how something like this can be turned into a production-worthy piece of code.
+0. A docker container with dependencies pre-loaded is spun up on ECS/ECR.
 
-My understanding is this:
+1. Data is loaded into a pandas dataframe.
 
-Static dataset is used to train an algorithm.
+2. Missing data is imputed using MICE (multiple-imputation using chained equations)
 
-Algorithm is then put into a new program capable of taking in new data and making predictions.
+3. Data is split into 80/20 training/testing subsets.
 
-In addition, new program is capable of adding new data to a database SQL-style.
+4. Various models are trained and optimized for recall. KNN, XGBoost, and Random Forest are explored. No hyperparameter tuning.
 
-Whole thing is put on the cloud (AWS, Redshift) with a web UI that enables new records to be uploaded, analyzed, and stored.
+5. Optimal model is pickle'd to an output file.
 
-Finally the whole thing creates a dashboard that allows the user (let's say an HMO) to do population analysis and discern, for instance, whether or not rates of diabetes are increasing or decreasing in a particular population group.
+6. A second script runs Flask with only the outputted model. 
 
-There's also logs to consider as well.
+7. User input is taken and a prediction made, which returns either likely for type 2 diabetes or unlikely.
 
-It would seem that there is a bit of a problem here, as the new data being entered is unlabeled, receives a predicted label, and then most likely will be given a true label.
+### Use Cases
 
-If this is the case, then it would seem that the addition of the true label should trigger a retraining of the algorithm.
+A health system or even insurance company will be able to track population metrics over time and visualize trends.
 
-Unsure how to make this work continuously, or if this sort of thing is even done.
+Individual patients can understand their risk profile.
 
-### Overall
+Population health managers at an HMO can flag patients likely to develop long-term complications and have them scheduled for screening (A1C).
 
-I'd like for the user to be able to upload new data either individually or in batches (CSV) and then have that data analyzed, appended to a cloud SQL server, and ultimately visualized.
-
-I'm picturing someone in a hospital or other health org or even insurance company being able to track population metrics over time and visualize trends.
-
-### Concerns
-
-Lots of unknowns around cloud computing and web development. Some familiarity with HTML5 and CSS but unsure about Flask, Django, etc.
-
-Unsure how to make these different tools (Python, SQL, Docker, AWS) "talk" to each other and ensure compatibility.
-
-## Open questions:
-
-### Honesty of using new features that are defined manually in the dataset?
-
-It seems like it's OK as long as the model is cross-validated with k-folds?
-
-### Honesty of imputing NaN values with median (from label)?
-
-If your dataset is incomplete is it considered OK to replace NaNs with median values? It seems as if the data is being manipulated?
-Or is it more a case of, do anything as long as it can be cross-validated and improves the accuracy score?
-
-### Ensemble learning
-
-Can you just do a grid search for every applicable algorithm and every applicable hyperparameter to get your ideal fit?
-
-### Mapping algorithms to problems
-
-Is there a resource or guide for going from: "I have problem of Type A, here are algorithms that can be used for Type A problems"? Classification v. regression, etc?
