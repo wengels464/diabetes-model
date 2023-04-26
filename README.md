@@ -20,6 +20,14 @@ Python dependencies will be managed using Conda.
 
 Deployable to ECS/ECR/Fargate, uses Flask API for user interaction and HTML styling.
 
+Once spun up, provides an HTML form that allows the following user characteristics to be entered:
+- Age
+- Blood Sugar
+- Insulin
+- BMI
+- Diabetes Pedigree Function
+
+
 ### Functionality
 
 0. A docker container with dependencies pre-loaded is spun up on ECS/ECR.
@@ -42,7 +50,7 @@ Deployable to ECS/ECR/Fargate, uses Flask API for user interaction and HTML styl
 
 A health system or even insurance company will be able to track population metrics over time and visualize trends.
 
-Individual patients can understand their risk profile.
+Individual patients can understand their risk profile and screen themselves for chronic conditions.
 
 Population health managers at an HMO can flag patients likely to develop long-term complications and have them scheduled for screening (A1C).
 
